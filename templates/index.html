@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fake News Detector</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url("https://media.licdn.com/dms/image/D5612AQGXpm0Sx4CRGQ/article-cover_image-shrink_600_2000/0/1676519640267?e=2147483647&v=beta&t=uoB4OZoMf_02ZPg6Z7kXDTBUbVAfQXzEFTgnerxFqMM");
+            background-size: cover;
+            background-position: center;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.84);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            resize: none;
+        }
+
+        input[type="submit"] {
+            background-color: #ff0011a8;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        #prediction_result {
+            margin-top: 20px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Fake News Detector</h1>
+        <form action="/predict" method="post">
+            <label for="news_text">Enter the news text:</label>
+            <textarea id="news_text" name="news_text" rows="4" cols="50" placeholder="Type or paste the news text here..."></textarea>
+            <input type="submit" value="Predict">
+        </form>
+        <div id="prediction_result"></div>
+    </div>
+
+    <script>
+        document.querySelector('form').addEventListener('submit', async function(event) {
+            event.preventDefault(); 
+
+            const formData = new FormData(this);
+            const newsText = formData.get('news_text');
+
+            const response = await fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `news_text=${encodeURIComponent(newsText)}`
+            });
+
+            const data = await response.json();
+
+            document.getElementById('prediction_result').innerHTML = `<p>The news is: ${data.prediction}</p>`;
+        });
+    </script>
+</body>
+</html>
